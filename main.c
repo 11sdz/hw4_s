@@ -4,30 +4,34 @@
 #include "graph.h"
 
 typedef enum bool {
-	True=1,
-	False=0
-	}bool;
+    True=1,
+    False=0
+}bool;
 
 
 int main(){
     char func = 'Z';
     pnode *head = malloc(sizeof(pnode));
-    while(func!= EOF){
+    if(!head){
+        printf("Malloc error");
+        exit(0);
+    }
+    while(func!=EOF){
         func=getchar();
-        if(func='A'){
+        if(func=='A'){
             if(head){
                 deleteGraph_cmd(head);
             }
             build_graph_cmd(head);
-        }else if (func='B'){
+        }if (func=='B'){
             insert_node_cmd(head);
-        }else if (func='D'){
+        }if (func=='D'){
             deleteGraph_cmd(head);
-        }else if (func='T'){
+        }if (func=='T'){
             TSP_cmd(head);
-        }else if (func='S'){
+        }if (func=='S'){
             shortsPath_cmd(head);
-        }else{
+        }if (func=='Q'){
             printGraph_cmd(head);
         }
     }
