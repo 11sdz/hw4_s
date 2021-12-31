@@ -26,13 +26,14 @@ int main(){
         }if (func=='B'){
             insert_node_cmd(head);
         }if (func=='D'){
-            deleteGraph_cmd(head);
+            delete_node_cmd(head);
         }if (func=='T'){
             TSP_cmd(head);
         }if (func=='S'){
             shortsPath_cmd(head);
         }if (func=='Q'){
-            printGraph_cmd(head);
+            printf("\n------------PRINT GRAPH----------\n");
+            printGraph_cmd(*head);
         }
     }
 }
