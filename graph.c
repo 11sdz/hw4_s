@@ -16,7 +16,7 @@ pnode get_node(pnode head,int id);
 void insert_last_node(int id,pnode *head);
 void insert_last_edge(pnode *curr, int source,int dest,int weight);
 void delete_edges(pnode *curr);
-void delete_edges_to(pnode *head,pnode curr);
+void delete_edges_to(pedge *head,pnode curr);
 /*
  * Building Graph
  */
@@ -136,40 +136,60 @@ void delete_edges(pnode *curr){
 }
 
 void delete_node_cmd(pnode *head){
+    printf("\n enter num of node to delete\n");
     int id = scanf("%d",&id);
+    id=6;
+    printf("\n DELETE NODE %d",id);
     pnode curr= get_node(*head,id);
     delete_edges(&curr);
     pnode *h=head;
     while(*h){
         if((*h)!=curr) {
-            delete_edges_to(h, curr);
+            if((*h)->node_num==5){
+                printf("\nNode 5 found debug !\n");
+            }
+            delete_edges_to(&((*h)->edges), curr);
         }
         h= &((*h)->next);
     }
+    h=head;
     pnode prev;
-    while((*h)->next!=curr){
+    while((*h)!=curr){
+        prev=(*h);
         h= &((*h)->next);
     }
-    prev=(*h);
-    prev->next=prev->next->next;
+    prev->next=(*h)->next;
     free(curr);
 
 }
-void delete_edges_to(pnode *head,pnode curr){
-    pnode *h=head;
-    while(*h){
-        h= &((*h)->next);
-        if((*h)==curr){
-            h= &((*h)->next);
-        }
-        pedge *pe=&((*h)->edges);
-        while(*pe){
-            pedge p=*pe;
-            *pe=(*pe)->next;
-            if(p->endpoint==curr){
-
+void delete_edges_to(pedge *head,pnode curr){
+    if(!*head){
+        return;
+    }
+    pedge *h=head;
+    pedge p=*h;
+    if((*h)->weight==70){
+        printf("debug\n");
+    }
+    if((*h)->endpoint==curr){
+        *h=p->next;
+        free(p);
+        return;
+    }
+    while((*h)->next){
+        if((*h)->next->endpoint==curr){
+            if((*h)->next->next==NULL){
+                p=(*h)->next;
+                (*h)->next=NULL;
+                free(p);
+                return;
             }
+            *h=p->next;
+            free(p);
+            return;
         }
+        p=*h;
+        h=&((*h)->next);
     }
 }
 /*
@@ -197,13 +217,21 @@ void printGraph_cmd(pnode head){
         current_node = (current_node)->next;
     }
 }
-
+/*
+ * TO DO
+ */
 void deleteGraph_cmd(pnode* head){
 
 }
+/*
+ * TO DO
+ */
 void shortsPath_cmd(pnode head){
 
 }
+/*
+ * TO DO
+ */
 void TSP_cmd(pnode head){
 
 }
