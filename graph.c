@@ -22,6 +22,7 @@ void delete_edges_to(pedge *head,pnode curr);
 void delete_all_node(pnode *curr);
 int * adjancy_matrix(pnode *head,int size);
 int dijkstra(int *adj_mat,int size,int src,int dest);
+int minimum_distance(int *distance,bool *vis,int size);
 /*
  * Building Graph
  */
@@ -256,7 +257,7 @@ void deleteGraph_cmd(pnode* head){
 /*
  * TO DO
  */
-void shortsPath_cmd(pnode head){
+void shortsPath_cmd(pnode *head){
     printf("\n-------SHORT PATH-------\n");
     int src,dest;
     scanf("%d",&src);
@@ -275,17 +276,23 @@ void shortsPath_cmd(pnode head){
         id++;
     }
     h=head;
+    int size=id;
+    int *adj_mat= adjancy_matrix(head,size);
+    int route = dijkstra(adj_mat,size,src,dest);
+    printf("the distance is = %d",route);
+    free(adj_mat);
+
 }
 /*
  * TO DO
  */
-void TSP_cmd(pnode head){
+void TSP_cmd(pnode *head){
     printf("\n-------TSP-------\n");
     int k=-1;
     scanf("%d",&k);
     int t[]={INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN};
     for (int i = 0; i < k; ++i) {
-        scanf("%d",t[i]);
+        scanf("%d",&t[i]);
     }
     pnode *h=head;
     int id=0;
@@ -302,10 +309,18 @@ void TSP_cmd(pnode head){
     int size=id;
     int *adj_mat= adjancy_matrix(head,size);
     h=head;
-    int ans= dijkstra()
 }
 int * adjancy_matrix(pnode *head,int size){
     int *adj_mat= malloc((size*size)*sizeof (int));
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if(i!=j) {
+                adj_mat[i * size + j] = INT_MAX;
+            }else{
+                adj_mat[i * size + i] = 0;
+            }
+        }
+    }
     pnode *h=head;
     while ((*h)){
         pedge *p=&((*h)->edges);
@@ -332,7 +347,51 @@ pnode get_node_by_id(pnode *head,int id){
     printf("no such node %d\n",id);
     return NULL;
 }
+/*
+ * DEBUG PRINT ADJANCY MATRIX
+ *
+ */
+void print_adj(int *adj_mat, int size){
+    printf("\n--------TEST ADJANCY MATRIX---------\n");
+    for (int i = 0; i < size ; ++i) {
+        for (int j = 0; j < size ; ++j) {
+            printf(", %d ",adj_mat[j*size+i]);
+        }
+        printf("\n");
+    }
+}
 
 int dijkstra(int *adj_mat,int size,int src,int dest){
+    printf("\n\n");
+    print_adj(adj_mat,size);
+    printf("\n\n");
+    int *distance= malloc(size*sizeof(int));
+    bool *vis= malloc(size*sizeof (bool));
+    for (int i = 0; i < size; ++i) {
+        distance[i]=INT_MAX;
+        vis[i]=False;
+    }
+    distance[src]=0;
+    for (int i = 0; i < size ; i++) {
+        int u =minimum_distance(distance,vis,size);
+        vis[i]=True;
+        for (int v = 0; v < size; v++) {
+            if (!vis[v] && adj_mat[u*size+v] && distance[u] != INT_MAX
+                 && distance[u] + adj_mat[u*size+v] < distance[v])
+            distance[v] = distance[u] + adj_mat[u*size+v];
+        }
+    }
+    int r=distance[dest];
+    free(distance);
+    return r;
+}
 
+int minimum_distance(int *distance,bool *vis,int size){
+    int min = INT_MAX;
+    int min_id;
+    for (int i = 0; i < size; i++) {
+        if (vis[i] == False && distance[i] <= min)
+            min = distance[i], min_id = i;
+    }
+    return min_id;
 }
