@@ -23,6 +23,8 @@ void delete_all_node(pnode *curr);
 int * adjancy_matrix(pnode *head,int size);
 int dijkstra(int *adj_mat,int size,int src,int dest);
 int minimum_distance(int *distance,bool *vis,int size);
+void print_dist(int *dist ,int src, int size);
+void print_adj(int *adj_mat, int size);
 /*
  * Building Graph
  */
@@ -360,14 +362,21 @@ void print_adj(int *adj_mat, int size){
         printf("\n");
     }
 }
+void print_dist(int *dist ,int src, int size){
+    for (int i = 0; i < size ; ++i) {
+        int d=dist[i];
+        printf("\n %d to %d weight is = %d",src,i,d);
+    }
+    printf("\n");
+}
 
 int dijkstra(int *adj_mat,int size,int src,int dest){
     printf("\n\n");
     print_adj(adj_mat,size);
     printf("\n\n");
     int *distance= malloc(size*sizeof(int));
-    bool *vis= malloc(size*sizeof (bool));
-    for (int i = 0; i < size; ++i) {
+    bool *vis= malloc(size*sizeof(bool));
+    for (int i = 0; i < size; i++) {
         distance[i]=INT_MAX;
         vis[i]=False;
     }
@@ -382,6 +391,7 @@ int dijkstra(int *adj_mat,int size,int src,int dest){
         }
     }
     int r=distance[dest];
+    print_dist(distance,src,size);
     free(distance);
     return r;
 }
