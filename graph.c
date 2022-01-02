@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<ctype.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "graph.h"
 
 
@@ -12,11 +13,15 @@ typedef enum bool {
 
 pnode new_node(pnode next, int i);
 pedge new_edge(pedge next,pnode dest,int weight);
-pnode get_node(pnode head,int id);
+pnode get_node(pnode head,int node_num);
+pnode get_node_by_id(pnode *head,int id);
 void insert_last_node(int id,pnode *head);
 void insert_last_edge(pnode *curr, int source,int dest,int weight);
 void delete_edges(pnode *curr);
 void delete_edges_to(pedge *head,pnode curr);
+void delete_all_node(pnode *curr);
+int * adjancy_matrix(pnode *head,int size);
+int dijkstra(int *adj_mat,int size,int src,int dest);
 /*
  * Building Graph
  */
@@ -49,15 +54,15 @@ void build_graph_cmd(pnode *head){
 /*
  * get node with index id
  */
-pnode get_node(pnode head,int id){
+pnode get_node(pnode head,int node_num){
     while (head){
-        if((head->node_num)==id) {
+        if((head->node_num)==node_num) {
             printf("\nfound node %d\n", head->node_num);
             return head;
         }
         head=head->next;
     }
-    printf("no such node %d\n",id);
+    printf("no such node %d\n",node_num);
     return NULL;
 }
 /*
@@ -66,6 +71,10 @@ pnode get_node(pnode head,int id){
  */
 pnode new_node(pnode next,int id){
     pnode p =(pnode) malloc(sizeof(node));
+    if(!p){
+        printf("error");
+        exit(1);
+    }
     p->node_num=id;
     p->next=next;
     return p;
@@ -100,6 +109,10 @@ void insert_last_edge(pnode *curr, int source,int dest,int weight){
  */
 pedge new_edge(pedge next,pnode dest,int weight){
     pedge p =(pedge) malloc(sizeof(edge));
+    if(!p){
+        printf("error");
+        exit(1);
+    }
     p->weight=weight;
     p->endpoint=dest;
     p->next=next;
@@ -128,6 +141,16 @@ void delete_edges(pnode *curr){
     pedge *h=&((*curr)->edges);
     if(!*h) return;
     pedge p=*h;
+    while(*h){
+        p=*h;
+        *h=(*h)->next;
+        free(p);
+    }
+}
+void delete_all_node(pnode *curr){
+    pnode *h=curr;
+    if(!*h)return;
+    pnode p=*h;
     while(*h){
         p=*h;
         *h=(*h)->next;
@@ -218,20 +241,98 @@ void printGraph_cmd(pnode head){
     }
 }
 /*
- * TO DO
+ * delete all edges then delete nodes
  */
 void deleteGraph_cmd(pnode* head){
-
+    pnode *h=head;
+    while((*h)){
+        delete_edges(h);
+        h=&((*h)->next);
+    }
+    h=head;
+    delete_all_node(head);
+    printf("\n-----------DELETED GRAPHH---------\n");
 }
 /*
  * TO DO
  */
 void shortsPath_cmd(pnode head){
-
+    printf("\n-------SHORT PATH-------\n");
+    int src,dest;
+    scanf("%d",&src);
+    scanf("%d",&dest);
+    printf("distance from src %d to dest %d ",src,dest);
+    pnode *h=head;
+    int id=0;
+    while((*h)){
+        (*h)->index=id;
+        if(src==(*h)->node_num){
+            src=id;
+        }else if(dest==(*h)->node_num){
+            dest=id;
+        }
+        h=&((*h)->next);
+        id++;
+    }
+    h=head;
 }
 /*
  * TO DO
  */
 void TSP_cmd(pnode head){
+    printf("\n-------TSP-------\n");
+    int k=-1;
+    scanf("%d",&k);
+    int t[]={INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN};
+    for (int i = 0; i < k; ++i) {
+        scanf("%d",t[i]);
+    }
+    pnode *h=head;
+    int id=0;
+    while((*h)){
+        (*h)->index=id;
+        for (int i = 0; i < k; ++i) {
+            if(t[i]==(*h)->node_num){
+                t[i]=id;
+            }
+        }
+        h=&((*h)->next);
+        id++;
+    }
+    int size=id;
+    int *adj_mat= adjancy_matrix(head,size);
+    h=head;
+    int ans= dijkstra()
+}
+int * adjancy_matrix(pnode *head,int size){
+    int *adj_mat= malloc((size*size)*sizeof (int));
+    pnode *h=head;
+    while ((*h)){
+        pedge *p=&((*h)->edges);
+        int id=(*h)->index;
+        while((*p)){
+            int dest=(*p)->endpoint->index;
+            int w=(*p)->weight;
+            adj_mat[id*size + dest]=w;
+            p=&((*p)->next);
+        }
+        h=&((*h)->next);
+    }
+    return adj_mat;
+}
+pnode get_node_by_id(pnode *head,int id){
+    pnode *h=head;
+    while (*h){
+        if((*h)->index==id) {
+            printf("\nfound node %d\n", (*h)->index);
+            return *h;
+        }
+        h=&((*h)->next);
+    }
+    printf("no such node %d\n",id);
+    return NULL;
+}
+
+int dijkstra(int *adj_mat,int size,int src,int dest){
 
 }

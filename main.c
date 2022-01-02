@@ -14,7 +14,7 @@ int main(){
     pnode *head = malloc(sizeof(pnode));
     if(!head){
         printf("Malloc error");
-        exit(0);
+        exit(1);
     }
     while(func!=EOF){
         func=getchar();
@@ -22,7 +22,7 @@ int main(){
             continue;
         }
         if(func=='A'){
-            if(head){
+            if(*head){
                 deleteGraph_cmd(head);
             }
             build_graph_cmd(head);
@@ -38,5 +38,13 @@ int main(){
             printf("\n------------PRINT GRAPH----------\n");
             printGraph_cmd(*head);
         }
+        if (func=='Z'){
+            break;
+        }
     }
+    deleteGraph_cmd(head);
+    printGraph_cmd(head);
+    free(head);
+    printGraph_cmd(head);
+    printf("\nEND\n");
 }
