@@ -21,11 +21,14 @@ void delete_edges(pnode *curr);
 void delete_edges_to(pedge *head,pnode curr);
 void delete_all_node(pnode *curr);
 int * adjancy_matrix(pnode *head,int size);
+int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac);
 void dijkstra(int *adj_mat,int *distance,int size,int src);
 int minimum_distance(int *distance,bool *vis,int size);
 void print_dist(int *dist ,int src, int size);
 void print_adj(int *adj_mat, int size);
 void relax(int *distance , int *adj_mat, bool *vis, int size ,int vm);
+void swaper(int *perm , int l , int i);
+void print_perm(int* perm, int k);
 /*
  * Building Graph
  */
@@ -124,6 +127,7 @@ pedge new_edge(pedge next,pnode dest,int weight){
 }
 /*
  * add node with id from user
+ * TO DO CHECK IF WORKING
  */
 void insert_node_cmd(pnode *head){
     //printf("----------INSERT NODE CMD--------\n");
@@ -169,21 +173,18 @@ void delete_all_node(pnode *curr){
 /*
  * delete node
  * input node num= id
- * delete id
+ * delete id EDITTTTTT*******************************
  */
 void delete_node_cmd(pnode *head){
     printf("\n enter num of node to delete\n");
-    int id = scanf("%d",&id);
-    id=6;
+    int id;
+    scanf("%d",&id);
     printf("\n DELETE NODE %d",id);
     pnode curr= get_node(*head,id);
     delete_edges(&curr);
     pnode *h=head;
     while(*h){
         if((*h)!=curr) {
-            if((*h)->node_num==5){
-                printf("\nNode 5 found debug !\n");
-            }
             delete_edges_to(&((*h)->edges), curr);
         }
         h= &((*h)->next);
@@ -295,10 +296,10 @@ void shortsPath_cmd(pnode *head){
     int size=id;
     int *adj_mat= adjancy_matrix(head,size);
     int *distance= malloc(size*sizeof(int));
-    int route = dijkstra(adj_mat,distance,size,src);
+    dijkstra(adj_mat,distance,size,src);
     printf("the distance is = %d",distance[dest]);
     free(adj_mat);
-    free(distance)
+    free(distance);
 
 }
 /*---------------------
@@ -309,14 +310,16 @@ void TSP_cmd(pnode *head){
     int k=-1;
     scanf("%d",&k);
     int t[]={INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN};
-    for (int i = 0; i < k; ++i) {
+    int factorial=1;
+    for (int i = 0; i < k; i++) {
         scanf("%d",&t[i]);
+        factorial=factorial*(i+1);
     }
     pnode *h=head;
     int id=0;
     while((*h)){
         (*h)->index=id;
-        for (int i = 0; i < k; ++i) {
+        for (int i = 0; i < k; i++) {
             if(t[i]==(*h)->node_num){
                 t[i]=id;
             }
@@ -328,24 +331,88 @@ void TSP_cmd(pnode *head){
     int *adj_mat= adjancy_matrix(head,size);
     h=head;
     int *tsp =malloc(k*sizeof(int));
-    /*
     while((*h)){
-        for (int i = 0; i <k ; ++i) {
+        for (int i = 0; i <k ; i++) {
             if((*h)->node_num==t[i]){
                 tsp[i]=(*h)->index;
+                break;
             }
         }
         h=&((*h)->next);
-    }*/
-    int *floyd_warshall= malloc(size*size*sizeof(int));
-    int *distance= malloc(size*sizeof(int));
-    for (int i = 0; i < size; ++i) {
-        dijkstra(adj_mat,distance,size,i);
-        for (int j = 0; j <size ; ++j) {
-            floyd_warshall[j*size+i]=distance[j];
+    }
+    int min = INT_MAX;
+    int *distance = malloc(size * sizeof(int));
+    if(k>0) {
+        int *floyd_warshall = malloc(size * size * sizeof(int));
+        for (int i = 0; i < size; ++i) {
+            dijkstra(adj_mat, distance, size, i);
+            for (int j = 0; j < size; ++j) {
+                floyd_warshall[j * size + i] = distance[j];
+            }
+        }
+        print_adj(floyd_warshall, size);
+        min = minimum_permutation(floyd_warshall, size, tsp, k, factorial);
+        free(floyd_warshall);
+    }
+    printf("\n%d\n",min);
+}
+
+int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac){
+    int min=INT_MAX;
+    int *perm= malloc(sizeof(int)*k);
+    for (int i = 0; i <k ; ++i) {
+        perm[i]=tsp[i];
+    }
+    int *ind= malloc(sizeof(int)*k);
+    for (int i = 0; i < k; ++i) {
+        ind[i]=0;
+    }
+    int val=0;
+    for (int i = 0; i < k-1; ++i) {
+        if(floyd_warshall[perm[i]*size+perm[i+1]]!=INT_MAX) {
+            val = val + floyd_warshall[perm[i] * size + perm[i + 1]];
+        }else{
+            val=INT_MAX;
+            break;
         }
     }
-    print_adj(floyd_warshall,size);
+    print_perm(perm,k);
+    min=(val<min) ? val : min;
+    int i=0;
+    while(i<k){
+        val=0;
+        if(ind[i]<i){
+            int l= (i%2==0) ? 0 : ind[i];
+            swaper(perm,l,i);
+            for (int i = 0; i < k-1; ++i) {
+                if(floyd_warshall[perm[i]*size+perm[i+1]]!=INT_MAX) {
+                    val = val + floyd_warshall[perm[i] * size + perm[i + 1]];
+                }else{
+                    val=INT_MAX;
+                    break;
+                }
+            }
+            min=(val<min) ? val : min;
+            print_perm(perm,k);
+            ind[i]++;
+            i=0;
+        }else{
+            ind[i]=0;
+            i++;
+        }
+    }
+    return min;
+}
+void swaper(int *perm , int l , int i){
+    int temp=perm[l];
+    perm[l]=perm[i];
+    perm[i]=temp;
+}
+void print_perm(int* perm, int k){
+    for (int i = 0; i <k ; ++i) {
+        printf(" %d , ",perm[i]);
+    }
+    printf("\n");
 }
 
 int * adjancy_matrix(pnode *head,int size){
