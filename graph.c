@@ -371,9 +371,9 @@ void print_dist(int *dist ,int src, int size){
 }
 
 int dijkstra(int *adj_mat,int size,int src,int dest){
-    printf("\n\n");
+    printf("\n");
     print_adj(adj_mat,size);
-    printf("\n\n");
+    printf("\n");
     int *distance= malloc(size*sizeof(int));
     bool *vis= malloc(size*sizeof(bool));
     for (int i = 0; i < size; i++) {
@@ -381,13 +381,13 @@ int dijkstra(int *adj_mat,int size,int src,int dest){
         vis[i]=False;
     }
     distance[src]=0;
-    for (int i = 0; i < size ; i++) {
-        int u =minimum_distance(distance,vis,size);
+    for (int i = 0; i < size-1 ; i++) {
+        int vm =minimum_distance(distance, vis, size);
         vis[i]=True;
-        for (int v = 0; v < size; v++) {
-            if (!vis[v] && adj_mat[u*size+v] && distance[u] != INT_MAX
-                 && distance[u] + adj_mat[u*size+v] < distance[v])
-            distance[v] = distance[u] + adj_mat[u*size+v];
+        for (int t = 0; t < size; t++) {
+            if ((!vis[t]) && distance[vm]!=INT_MAX && adj_mat[vm*size+t]>0 && distance[vm]+adj_mat[vm*size+t]<distance[t]){
+                distance[t]=distance[vm]+adj_mat[vm*size+t];
+            }
         }
     }
     int r=distance[dest];
@@ -400,7 +400,7 @@ int minimum_distance(int *distance,bool *vis,int size){
     int min = INT_MAX;
     int min_id;
     for (int i = 0; i < size; i++) {
-        if (vis[i] == False && distance[i] <= min)
+        if ((!vis[i]) && (distance[i] <= min))
             min = distance[i], min_id = i;
     }
     return min_id;
