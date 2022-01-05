@@ -49,7 +49,6 @@ void build_graph_cmd(pnode *head){
         if(c=='n') {
             scanf("%d", &id);
         }
-        pnode curr=get_node(*h,id);
         while(scanf("%d",&dest) && scanf("%d",&weight)){
             insert_last_edge(h,id, dest,weight);
         }
