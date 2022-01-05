@@ -76,6 +76,7 @@ pnode new_node(pnode next,int id){
         printf("error");
         exit(1);
     }
+    p->edges=NULL;
     p->node_num=id;
     p->next=next;
     return p;
