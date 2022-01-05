@@ -289,6 +289,10 @@ void shortsPath_cmd(pnode *head){
         exit(1);
     }
     dijkstra(adj_mat,distance,size,src);
+    int dist=distance[dest];
+    if(dist==INT_MAX){
+        dist=-1;
+    }
     printf("Dijsktra shortest path: %d\n",distance[dest]);
     free(adj_mat);
     free(distance);
@@ -352,6 +356,9 @@ void TSP_cmd(pnode *head){
     free(adj_mat);
     free(distance);
     free(t);
+    if(min==INT_MAX){
+        min=-1;
+    }
     printf("TSP shortest path: %d\n",min);
 }
 /*
