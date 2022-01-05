@@ -10,7 +10,7 @@ graph: graph.o main.o
 graph.o: graph.c graph.h
 	gcc -c -g -Wall graph.c graph.h
 
-main.o: main.c string_prog.h
+main.o: main.c graph.h
 	gcc -c -g -Wall main.c graph.h
 
 PHONY: clean all
