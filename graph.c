@@ -531,7 +531,7 @@ void relax(int *distance , int *adj_mat, bool *vis, int size ,int vm){
 
 int minimum_distance(int *distance,bool *vis,int size){
     int min = INT_MAX;
-    int min_id=INT_MAX;
+    int min_id=0;
     for (int i = 0; i < size; i++) {
         if ((!vis[i]) && (distance[i] < min))
             min = distance[i], min_id = i;
