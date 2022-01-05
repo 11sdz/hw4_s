@@ -41,7 +41,7 @@ void build_graph_cmd(pnode *head){
     for (int i = 0; i < num; ++i) {
         insert_last_node(i,head);
     }
-    int dest ,weight , id;
+    int dest=-1 ,weight=-1 , id=-1;
     for (int i = 0; i < num; ++i) {
         h=head;
         char c='\n';
@@ -123,7 +123,7 @@ pedge new_edge(pedge next,pnode dest,int weight){
  * TO DO CHECK IF WORKING
  */
 void insert_node_cmd(pnode *head){
-    int id,dest,weight;
+    int id=-1,dest=-1,weight=-1;
     scanf("%d",&id);
     pnode curr=get_node(*head,id);
     if(curr) {
@@ -168,7 +168,7 @@ void delete_all_node(pnode *curr){
  * delete id EDITTTTTT
  */
 void delete_node_cmd(pnode *head){
-    int id;
+    int id=-1;
     scanf("%d",&id);
     pnode curr= get_node(*head,id);
     delete_edges(&curr);
@@ -180,7 +180,7 @@ void delete_node_cmd(pnode *head){
         h= &((*h)->next);
     }
     h=head;
-    pnode prev;
+    pnode prev=(*h);
     while((*h)!=curr){
         prev=(*h);
         h= &((*h)->next);
@@ -228,7 +228,7 @@ void printGraph_cmd(pnode head){
         return;
     }
     pnode current_node = head;
-    pedge current_edge;
+    pedge current_edge=(*head).edges;
     int count=0;
     printf("Starting to Print!\n");
     while(current_node != (pnode) NULL){
@@ -260,7 +260,7 @@ void deleteGraph_cmd(pnode* head){
  * -----------------using dijkstra-------------------
  */
 void shortsPath_cmd(pnode *head){
-    int src,dest;
+    int src=-1,dest=-1;
     scanf("%d",&src);
     scanf("%d",&dest);
     pnode *h=head;
@@ -293,7 +293,7 @@ void shortsPath_cmd(pnode *head){
     if(dist==INT_MAX){
         dist=-1;
     }
-    printf("Dijsktra shortest path: %d \n",dist);
+    printf("Dijsktra shortest path: %d\n",dist);
     free(adj_mat);
     free(distance);
 
@@ -359,7 +359,7 @@ void TSP_cmd(pnode *head){
     if(min==INT_MAX){
         min=-1;
     }
-    printf("TSP shortest path: %d \n",min);
+    printf("TSP shortest path: %d\n",min);
 }
 /*
  * DEBUG
