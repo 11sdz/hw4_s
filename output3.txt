@@ -1,3 +1,0 @@
-TSP shortest path: 6 
-TSP shortest path: 8 
-TSP shortest path: 1 
