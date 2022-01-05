@@ -16,6 +16,7 @@ int main(){
         printf("Malloc error");
         exit(1);
     }
+    *head=NULL;
     while(func!=EOF){
         func=getchar();
         if(func=='A'){
