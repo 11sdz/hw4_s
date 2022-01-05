@@ -43,8 +43,5 @@ int main(){
         }
     }
     deleteGraph_cmd(head);
-    printGraph_cmd(head);
     free(head);
-    printGraph_cmd(head);
-    printf("\nEND\n");
 }

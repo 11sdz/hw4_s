@@ -30,25 +30,22 @@ void relax(int *distance , int *adj_mat, bool *vis, int size ,int vm);
 void swaper(int *perm , int l , int i);
 void print_perm(int* perm, int k);
 void print_tsp(int *t, int size);
-/*
- * Building Graph
+/*-----------------------------------------------------
+ * -------------------Building Graph-------------------
+ * ----------------------------------------------------
  */
 void build_graph_cmd(pnode *head){
-    //printf("----------BUILD GRAPH---------\n");
     int num=0;
     pnode *h=head;
     scanf("%d",&num);
     for (int i = 0; i < num; ++i) {
         insert_last_node(i,head);
     }
-    //printf("\n");
     int dest ,weight , id;
     for (int i = 0; i < num; ++i) {
         h=head;
         char c='\n';
         while((c=getchar())!='n');
-        printf("%d",(int)c);
-        printf("\n");
         if(c=='n') {
             scanf("%d", &id);
         }
@@ -58,23 +55,21 @@ void build_graph_cmd(pnode *head){
         }
     }
 }
-/*
- * get node with index id
+/*-----------------------------------------------------
+ * --------------get node with index id----------------
  */
 pnode get_node(pnode head,int node_num){
     while (head){
         if((head->node_num)==node_num) {
-            printf("\nfound node %d\n", head->node_num);
             return head;
         }
         head=head->next;
     }
-    printf("no such node %d\n",node_num);
     return NULL;
 }
-/*
- * creating new Node
- * with id
+/*------------------------------------
+ * ----------------creating new Node
+ * -------------------------with id
  */
 pnode new_node(pnode next,int id){
     pnode p =(pnode) malloc(sizeof(node));
@@ -86,7 +81,7 @@ pnode new_node(pnode next,int id){
     p->next=next;
     return p;
 }
-/*
+/*----------------------------------
  * insert new node to last of linked list
  */
 void insert_last_node(int id,pnode *head){
@@ -94,7 +89,6 @@ void insert_last_node(int id,pnode *head){
     while(*h){
         h= &((*h)->next);
     }
-    printf("new node= %d , ",id);
     *h= new_node(NULL,id);
 }
 /*
@@ -108,7 +102,6 @@ void insert_last_edge(pnode *curr, int source,int dest,int weight){
     while(*h){
         h= &((*h)->next);
     }
-    printf("new edge from  %d to %d ,  ", pn_source->node_num, pn_dest->node_num);
     *h= new_edge(NULL, pn_dest, weight);
 }
 /*
@@ -125,12 +118,11 @@ pedge new_edge(pedge next,pnode dest,int weight){
     p->next=next;
     return p;
 }
-/*
+/*-----------------------------------
  * add node with id from user
  * TO DO CHECK IF WORKING
  */
 void insert_node_cmd(pnode *head){
-    //printf("----------INSERT NODE CMD--------\n");
     int id,dest,weight;
     scanf("%d",&id);
     pnode curr=get_node(*head,id);
@@ -170,16 +162,14 @@ void delete_all_node(pnode *curr){
         free(p);
     }
 }
-/*
- * delete node
- * input node num= id
- * delete id EDITTTTTT*******************************
+/*-----------------------------------
+ * --------delete node-----------------
+ * input node num= id--------------------
+ * delete id EDITTTTTT
  */
 void delete_node_cmd(pnode *head){
-    printf("\n enter num of node to delete\n");
     int id;
     scanf("%d",&id);
-    printf("\n DELETE NODE %d",id);
     pnode curr= get_node(*head,id);
     delete_edges(&curr);
     pnode *h=head;
@@ -199,8 +189,8 @@ void delete_node_cmd(pnode *head){
     free(curr);
 
 }
-/*
- * delete all edges endpoint to curr
+/*----------------------------------------------------------------------
+ * ------------delete all edges endpoint to curr----------------------
  */
 void delete_edges_to(pedge *head,pnode curr){
     if(!*head){
@@ -208,9 +198,6 @@ void delete_edges_to(pedge *head,pnode curr){
     }
     pedge *h=head;
     pedge p=*h;
-    if((*h)->weight==70){
-        printf("debug\n");
-    }
     if((*h)->endpoint==curr){
         *h=p->next;
         free(p);
@@ -237,7 +224,6 @@ void delete_edges_to(pedge *head,pnode curr){
  * Self Debug
  */
 void printGraph_cmd(pnode head){
-    printf("printGraph_cmd\n");
     if(head == (pnode) NULL){
         return;
     }
@@ -257,7 +243,7 @@ void printGraph_cmd(pnode head){
         current_node = (current_node)->next;
     }
 }
-/*
+/*-----------------------------------
  * delete all edges then delete nodes
  */
 void deleteGraph_cmd(pnode* head){
@@ -268,18 +254,15 @@ void deleteGraph_cmd(pnode* head){
     }
     h=head;
     delete_all_node(head);
-    printf("\n-----------DELETED GRAPHH---------\n");
 }
-/*
- * find short path
- * using dijkstra
+/*---------------------------------------------------
+ * ------------------find short path------------------
+ * -----------------using dijkstra-------------------
  */
 void shortsPath_cmd(pnode *head){
-    printf("\n-------SHORT PATH-------\n");
     int src,dest;
     scanf("%d",&src);
     scanf("%d",&dest);
-    printf("distance from src %d to dest %d ",src,dest);
     pnode *h=head;
     int id=0;
     while((*h)){
@@ -306,23 +289,26 @@ void shortsPath_cmd(pnode *head){
         exit(1);
     }
     dijkstra(adj_mat,distance,size,src);
-    printf("the distance is = %d",distance[dest]);
+    printf("Dijsktra shortest path: %d\n",distance[dest]);
     free(adj_mat);
     free(distance);
 
 }
-/*---------------------
- * ------------TO DO-------------
+/*-------------------------------------------------------------------------------------
+ * -------------TSP running dijkstra n times and calculating permutations taking the min
  */
 void TSP_cmd(pnode *head){
-    printf("\n-------TSP-------\n");
     int k=-1;
     scanf("%d",&k);
-    int t[]={INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN,INT_MIN};
+    int *t = malloc(sizeof(int)*6);
     int factorial=1;
-    for (int i = 0; i < k; i++) {
-        scanf("%d",&t[i]);
-        factorial=factorial*(i+1);
+    for (int i = 0; i < 6; i++) {
+        if(i<k) {
+            scanf("%d", &t[i]);
+            factorial = factorial * (i + 1);
+        } else{
+            t[i]=INT_MIN;
+        }
     }
     pnode *h=head;
     int id=0;
@@ -361,13 +347,12 @@ void TSP_cmd(pnode *head){
             floyd_warshall[j * size + i] = distance[j];
         }
     }
-    print_adj(floyd_warshall, size);
     min = minimum_permutation(floyd_warshall, size, t, k, factorial);
     free(floyd_warshall);
     free(adj_mat);
     free(distance);
     free(t);
-    printf("\n%d\n",min);
+    printf("TSP shortest path: %d\n",min);
 }
 /*
  * DEBUG
@@ -406,7 +391,6 @@ int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac){
             break;
         }
     }
-    print_perm(perm,k);
     min=(val<min) ? val : min;
     int i=0;
     while(i<k){
@@ -423,7 +407,6 @@ int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac){
                 }
             }
             min=(val<min) ? val : min;
-            print_perm(perm,k);
             ind[i]++;
             i=0;
         }else{
@@ -477,12 +460,10 @@ pnode get_node_by_id(pnode *head,int id){
     pnode *h=head;
     while (*h){
         if((*h)->index==id) {
-            //printf("\nfound node %d\n", (*h)->index);
             return *h;
         }
         h=&((*h)->next);
     }
-    //printf("no such node %d\n",id);
     return NULL;
 }
 /*
