@@ -24,12 +24,12 @@ void adjancy_matrix(pnode *head,int size,int *adj_mat);
 int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac);
 void dijkstra(int *adj_mat,int *distance,int size,int src);
 int minimum_distance(int *distance,bool *vis,int size);
-void print_dist(int *dist ,int src, int size);
-void print_adj(int *adj_mat, int size);
 void relax(int *distance , int *adj_mat, bool *vis, int size ,int vm);
 void swaper(int *perm , int l , int i);
-void print_perm(int* perm, int k);
-void print_tsp(int *t, int size);
+//void print_dist(int *dist ,int src, int size);
+//void print_adj(int *adj_mat, int size);
+//void print_perm(int* perm, int k);
+//void print_tsp(int *t, int size);
 /*-----------------------------------------------------
  * -------------------Building Graph-------------------
  * ----------------------------------------------------
@@ -45,7 +45,8 @@ void build_graph_cmd(pnode *head){
     for (int i = 0; i < num; ++i) {
         h=head;
         char c='\n';
-        while((c=getchar())!='n');
+        //while((c=getchar())!='n');
+        c=getchar();
         if(c=='n') {
             scanf("%d", &id);
         }
@@ -292,7 +293,7 @@ void shortsPath_cmd(pnode *head){
     if(dist==INT_MAX){
         dist=-1;
     }
-    printf("Dijsktra shortest path: %d\n",distance[dest]);
+    printf("Dijsktra shortest path: %d\n",dist);
     free(adj_mat);
     free(distance);
 
@@ -363,12 +364,12 @@ void TSP_cmd(pnode *head){
 /*
  * DEBUG
  */
-void print_tsp(int *t, int size){
-    for (int i = 0; i <size ; ++i) {
-        printf(" %d ",t[i]);
-    }
-    printf("\n");
-}
+//void print_tsp(int *t, int size){
+//    for (int i = 0; i <size ; ++i) {
+//        printf(" %d ",t[i]);
+//    }
+//    printf("\n");
+//}
 
 int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac){
     int min=INT_MAX;
@@ -429,12 +430,12 @@ void swaper(int *perm , int l , int i){
     perm[l]=perm[i];
     perm[i]=temp;
 }
-void print_perm(int* perm, int k){
-    for (int i = 0; i <k ; ++i) {
-        printf(" %d , ",perm[i]);
-    }
-    printf("\n");
-}
+//void print_perm(int* perm, int k){
+//    for (int i = 0; i <k ; ++i) {
+//        printf(" %d , ",perm[i]);
+//    }
+//    printf("\n");
+//}
 
 void adjancy_matrix(pnode *head,int size,int *adj_mat){
     for (int i = 0; i < size; ++i) {
@@ -476,30 +477,29 @@ pnode get_node_by_id(pnode *head,int id){
  * DEBUG PRINT ADJANCY MATRIX
  *
  */
-void print_adj(int *adj_mat, int size){
-    printf("\n--------TEST ADJANCY MATRIX---------\n");
-    for (int i = 0; i < size ; ++i) {
-        for (int j = 0; j < size ; ++j) {
-            printf(", %d ",adj_mat[j*size+i]);
-        }
-        printf("\n");
-    }
-}
+//void print_adj(int *adj_mat, int size){
+//    printf("\n--------TEST ADJANCY MATRIX---------\n");
+//    for (int i = 0; i < size ; ++i) {
+//        for (int j = 0; j < size ; ++j) {
+//            printf(", %d ",adj_mat[j*size+i]);
+//        }
+//        printf("\n");
+//    }
+//}
 /*
  * debug print distance
  */
-void print_dist(int *dist ,int src, int size){
-    for (int i = 0; i < size ; ++i) {
-        int d=dist[i];
-        printf("\n %d to %d weight is = %d",src,i,d);
-    }
-    printf("\n");
-}
+//void print_dist(int *dist ,int src, int size){
+//    for (int i = 0; i < size ; ++i) {
+//        int d=dist[i];
+//        printf("\n %d to %d weight is = %d",src,i,d);
+//    }
+//    printf("\n");
+//}
 /*
  * dijkstra algo
  */
 void dijkstra(int *adj_mat,int* distance,int size,int src){
-    printf("\n");
     bool *vis= malloc(size*sizeof(bool));
     if(!vis){
         printf("MALLOC ERROR");

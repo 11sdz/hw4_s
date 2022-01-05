@@ -18,9 +18,6 @@ int main(){
     }
     while(func!=EOF){
         func=getchar();
-        if(isspace(func)){
-            continue;
-        }
         if(func=='A'){
             if(*head){
                 deleteGraph_cmd(head);
