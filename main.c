@@ -35,11 +35,11 @@ int main(){
         }if (func=='S'){
             shortsPath_cmd(head);
         }if (func=='Q'){
+            /*
+             * DEBUG
+             */
             printf("\n------------PRINT GRAPH----------\n");
             printGraph_cmd(*head);
-        }
-        if (func=='Z'){
-            break;
         }
     }
     deleteGraph_cmd(head);

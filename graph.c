@@ -20,7 +20,7 @@ void insert_last_edge(pnode *curr, int source,int dest,int weight);
 void delete_edges(pnode *curr);
 void delete_edges_to(pedge *head,pnode curr);
 void delete_all_node(pnode *curr);
-int * adjancy_matrix(pnode *head,int size);
+void adjancy_matrix(pnode *head,int size,int *adj_mat);
 int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac);
 void dijkstra(int *adj_mat,int *distance,int size,int src);
 int minimum_distance(int *distance,bool *vis,int size);
@@ -29,22 +29,22 @@ void print_adj(int *adj_mat, int size);
 void relax(int *distance , int *adj_mat, bool *vis, int size ,int vm);
 void swaper(int *perm , int l , int i);
 void print_perm(int* perm, int k);
+void print_tsp(int *t, int size);
 /*
  * Building Graph
  */
 void build_graph_cmd(pnode *head){
-    printf("----------BUILD GRAPH---------\n");
+    //printf("----------BUILD GRAPH---------\n");
     int num=0;
     pnode *h=head;
     scanf("%d",&num);
     for (int i = 0; i < num; ++i) {
         insert_last_node(i,head);
     }
-    printf("\n");
+    //printf("\n");
     int dest ,weight , id;
     for (int i = 0; i < num; ++i) {
         h=head;
-        printf("enter n\n");
         char c='\n';
         while((c=getchar())!='n');
         printf("%d",(int)c);
@@ -294,8 +294,17 @@ void shortsPath_cmd(pnode *head){
     }
     h=head;
     int size=id;
-    int *adj_mat= adjancy_matrix(head,size);
+    int *adj_mat=malloc(size*size*sizeof(int));
+    if(!adj_mat){
+        printf("MALLOC ERROR");
+        exit(1);
+    }
+    adjancy_matrix(head,size,adj_mat);
     int *distance= malloc(size*sizeof(int));
+    if(!distance){
+        printf("MALLOC ERROR");
+        exit(1);
+    }
     dijkstra(adj_mat,distance,size,src);
     printf("the distance is = %d",distance[dest]);
     free(adj_mat);
@@ -328,42 +337,63 @@ void TSP_cmd(pnode *head){
         id++;
     }
     int size=id;
-    int *adj_mat= adjancy_matrix(head,size);
-    h=head;
-    int *tsp =malloc(k*sizeof(int));
-    while((*h)){
-        for (int i = 0; i <k ; i++) {
-            if((*h)->node_num==t[i]){
-                tsp[i]=(*h)->index;
-                break;
-            }
-        }
-        h=&((*h)->next);
+    int *adj_mat=malloc(size*size*sizeof(int));
+    if(!adj_mat){
+        printf("MALLOC ERROR");
+        exit(1);
     }
+    adjancy_matrix(head,size,adj_mat);
+    h=head;
     int min = INT_MAX;
     int *distance = malloc(size * sizeof(int));
-    if(k>0) {
-        int *floyd_warshall = malloc(size * size * sizeof(int));
-        for (int i = 0; i < size; ++i) {
-            dijkstra(adj_mat, distance, size, i);
-            for (int j = 0; j < size; ++j) {
-                floyd_warshall[j * size + i] = distance[j];
-            }
-        }
-        print_adj(floyd_warshall, size);
-        min = minimum_permutation(floyd_warshall, size, tsp, k, factorial);
-        free(floyd_warshall);
+    if(!distance){
+        printf("MALLOC ERROR");
+        exit(1);
     }
+    int *floyd_warshall = malloc(size * size * sizeof(int));
+    if(!floyd_warshall){
+        printf("MALLOC ERROR");
+        exit(1);
+    }
+    for (int i = 0; i < size; ++i) {
+        dijkstra(adj_mat, distance, size, i);
+        for (int j = 0; j < size; ++j) {
+            floyd_warshall[j * size + i] = distance[j];
+        }
+    }
+    print_adj(floyd_warshall, size);
+    min = minimum_permutation(floyd_warshall, size, t, k, factorial);
+    free(floyd_warshall);
+    free(adj_mat);
+    free(distance);
+    free(t);
     printf("\n%d\n",min);
+}
+/*
+ * DEBUG
+ */
+void print_tsp(int *t, int size){
+    for (int i = 0; i <size ; ++i) {
+        printf(" %d ",t[i]);
+    }
+    printf("\n");
 }
 
 int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac){
     int min=INT_MAX;
     int *perm= malloc(sizeof(int)*k);
+    if(!perm){
+        printf("MALLOC ERROR");
+        exit(1);
+    }
     for (int i = 0; i <k ; ++i) {
         perm[i]=tsp[i];
     }
     int *ind= malloc(sizeof(int)*k);
+    if(!ind){
+        printf("MALLOC ERROR");
+        exit(1);
+    }
     for (int i = 0; i < k; ++i) {
         ind[i]=0;
     }
@@ -401,6 +431,8 @@ int minimum_permutation(int* floyd_warshall,int size,int *tsp, int k,int fac){
             i++;
         }
     }
+    free(ind);
+    free(perm);
     return min;
 }
 void swaper(int *perm , int l , int i){
@@ -415,8 +447,7 @@ void print_perm(int* perm, int k){
     printf("\n");
 }
 
-int * adjancy_matrix(pnode *head,int size){
-    int *adj_mat= malloc((size*size)*sizeof (int));
+void adjancy_matrix(pnode *head,int size,int *adj_mat){
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
             if(i!=j) {
@@ -438,7 +469,6 @@ int * adjancy_matrix(pnode *head,int size){
         }
         h=&((*h)->next);
     }
-    return adj_mat;
 }
 /*
  * get node by id
@@ -484,6 +514,10 @@ void print_dist(int *dist ,int src, int size){
 void dijkstra(int *adj_mat,int* distance,int size,int src){
     printf("\n");
     bool *vis= malloc(size*sizeof(bool));
+    if(!vis){
+        printf("MALLOC ERROR");
+        exit(1);
+    }
     for (int i = 0; i < size; i++) {
         distance[i]=INT_MAX;
         vis[i]=False;
@@ -494,6 +528,7 @@ void dijkstra(int *adj_mat,int* distance,int size,int src){
         vis[vm]=True;
         relax(distance,adj_mat,vis,size,vm);
     }
+    free(vis);
 }
 
 void relax(int *distance , int *adj_mat, bool *vis, int size ,int vm){
