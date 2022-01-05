@@ -44,8 +44,7 @@ void build_graph_cmd(pnode *head){
     int dest=-1 ,weight=-1 , id=-1;
     for (int i = 0; i < num; ++i) {
         h=head;
-        char c='\n';
-        //while((c=getchar())!='n');
+        char c='Z';
         c=getchar();
         if(c=='n') {
             scanf("%d", &id);
@@ -142,7 +141,7 @@ void insert_node_cmd(pnode *head){
 void delete_edges(pnode *curr){
     pedge *h=&((*curr)->edges);
     if(!*h) return;
-    pedge p=*h;
+    pedge p=NULL;
     while(*h){
         p=*h;
         *h=(*h)->next;
@@ -155,7 +154,7 @@ void delete_edges(pnode *curr){
 void delete_all_node(pnode *curr){
     pnode *h=curr;
     if(!*h)return;
-    pnode p=*h;
+    pnode p=NULL;
     while(*h){
         p=*h;
         *h=(*h)->next;
@@ -275,7 +274,6 @@ void shortsPath_cmd(pnode *head){
         h=&((*h)->next);
         id++;
     }
-    h=head;
     int size=id;
     int *adj_mat=malloc(size*size*sizeof(int));
     if(!adj_mat){
@@ -333,7 +331,6 @@ void TSP_cmd(pnode *head){
         exit(1);
     }
     adjancy_matrix(head,size,adj_mat);
-    h=head;
     int min = INT_MAX;
     int *distance = malloc(size * sizeof(int));
     if(!distance){
